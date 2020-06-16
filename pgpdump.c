@@ -13,6 +13,7 @@ int lflag;
 int mflag;
 int pflag;
 int uflag;
+FILE *exportFile;
 
 private string pgpdump_version = "0.33, Copyright (C) 1998-2017 Kazu Yamamoto";
 private string prog;
@@ -48,11 +49,12 @@ private void
 usage(void)
 {
 	string prog = getprog();
-	fprintf(stderr, "%s -h|-v\n", prog);	
-	fprintf(stderr, "%s [-agilmpu] [PGPfile]\n", prog);
+	fprintf(stderr, "%s -h|-v\n", prog);
+	fprintf(stderr, "%s [-agilmpu] [-e <file>] [PGPfile]\n", prog);
 	fprintf(stderr, "\t -h -- displays this help\n");
 	fprintf(stderr, "\t -v -- displays version\n");
 	fprintf(stderr, "\t -a -- accepts ASCII input only\n");
+	fprintf(stderr, "\t -e -- export private key in ssh2 format\n");
 	fprintf(stderr, "\t -g -- selects alternate dump format\n");
 	fprintf(stderr, "\t -i -- dumps integer packets\n");
 	fprintf(stderr, "\t -l -- dumps literal packets\n");
@@ -111,7 +113,7 @@ main(int argc, string argv[])
 
 	setprog(argv[0]);
 
-	while ((c = getopt(argc, argv, "hvagilmpu")) != -1)
+	while ((c = getopt(argc, argv, "hvagilmpue:")) != -1)
 		switch (c){
 		case 'h':
 			usage();
@@ -121,6 +123,11 @@ main(int argc, string argv[])
 			break;
 		case 'a':
 			aflag++;
+			break;
+		case 'e':
+			if ((exportFile = fopen(optarg, "wb")) == NULL) {
+				warn_exit("can't open %s.", optarg);
+			}
 			break;
 		case 'g':
 			gflag++;
@@ -143,16 +150,22 @@ main(int argc, string argv[])
 		default:
 			usage();
 		}
-	argc -= optind;
-	argv += optind;
+		argc -= optind;
+		argv += optind;
 
         if (argc > 0) {
 	        string target = argv[0];
-		if (freopen(target, "rb", stdin) == NULL)
-			warn_exit("can't open %s.", target);
+			if (freopen(target, "rb", stdin) == NULL) {
+				warn_exit("can't open %s.", target);
+			}
         }
-	
+
 	parse_packet();
+
+	if (exportFile) {
+		fclose(exportFile);
+		exportFile = NULL;
+	}
 	exit(EXIT_SUCCESS);
 }
 

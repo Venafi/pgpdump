@@ -37,6 +37,7 @@ public int lflag;
 public int mflag;
 public int pflag;
 public int uflag;
+public FILE *exportFile;
 
 /*
  * pgpdump.c
