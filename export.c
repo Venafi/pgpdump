@@ -77,7 +77,6 @@ free_export_params(void)
 	free_export_param(&exportData.rsa.p);
 }
 
-
 public void
 export_ssh2_key(int id)
 {
@@ -173,6 +172,10 @@ export_ssh2_key(int id)
 		fseek(f, 0, SEEK_SET);
 
 		fprintf(f, "---- BEGIN SSH2 ENCRYPTED PRIVATE KEY ----\n");
+		fprintf(f, "Comment: Creation Date: ");
+		write_time(key_creation_time, f);
+		fprintf(f, "\n");
+
 		fprintf(f, "%s\n", b64);
 		fprintf(f, "---- END SSH2 ENCRYPTED PRIVATE KEY ----\n");
 	}

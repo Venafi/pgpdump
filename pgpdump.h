@@ -64,6 +64,7 @@ public int eflag;
 public int exportID;
 public exportParams exportData;
 public exportParam *exportDest;
+public time_t key_creation_time;
 
 /*
  * pgpdump.c
@@ -116,6 +117,7 @@ public void sig_creation_time4(string);
 public void sig_expiration_time4(string);
 public void key_creation_time4(string);
 public void key_expiration_time4(string);
+public void write_time(time_t pt, FILE *f);
 public void ver(int, int, int);
 public int string_to_key(void);
 public void multi_precision_integer(string);

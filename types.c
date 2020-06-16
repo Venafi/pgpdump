@@ -29,8 +29,8 @@
 #endif
 
 private void time4_base(string, time_t *);
-private time_t key_creation_time = 0;
 private time_t sig_creation_time = 0;
+time_t key_creation_time = 0;
 
 private string
 PUB_ALGS[] = {
@@ -220,6 +220,18 @@ time4_base(string str, time_t *pt)
 		printf("\t%s - %s UTC %s", str, pat, pyr);
 	else
 		printf("\t%s - %s %s %s", str, pat, tm_zone(ptm), pyr);
+}
+
+public void
+write_time(time_t pt, FILE *f)
+{
+	struct tm		*ptm;
+	char			buffer[80];
+
+	ptm = gmtime(&pt);
+	strftime(buffer, sizeof(buffer), "%m/%d/%Y %H:%M:%S", ptm);
+
+	fprintf(f, "%s", buffer);
 }
 
 public void
