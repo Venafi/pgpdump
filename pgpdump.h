@@ -193,6 +193,7 @@ public void image_attribute(int);
  * export.c
  */
 public void export_ssh2_key(int id);
+public char * EncodeBase64(const byte *UnencodedString, int length);
 
 #endif /* _PGP_DUMP_H_ */
 
