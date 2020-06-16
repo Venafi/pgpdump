@@ -13,7 +13,9 @@ int lflag;
 int mflag;
 int pflag;
 int uflag;
-FILE *exportFile;
+char *exportPath;
+exportParams exportData;
+exportParam *exportDest;
 
 private string pgpdump_version = "0.33, Copyright (C) 1998-2017 Kazu Yamamoto";
 private string prog;
@@ -54,7 +56,7 @@ usage(void)
 	fprintf(stderr, "\t -h -- displays this help\n");
 	fprintf(stderr, "\t -v -- displays version\n");
 	fprintf(stderr, "\t -a -- accepts ASCII input only\n");
-	fprintf(stderr, "\t -e -- export private key in ssh2 format\n");
+	fprintf(stderr, "\t -e -- export unencrypted secret key as ssh2 format\n");
 	fprintf(stderr, "\t -g -- selects alternate dump format\n");
 	fprintf(stderr, "\t -i -- dumps integer packets\n");
 	fprintf(stderr, "\t -l -- dumps literal packets\n");
@@ -113,6 +115,8 @@ main(int argc, string argv[])
 
 	setprog(argv[0]);
 
+	memset(&exportData, 0, sizeof(exportData));
+
 	while ((c = getopt(argc, argv, "hvagilmpue:")) != -1)
 		switch (c){
 		case 'h':
@@ -125,9 +129,7 @@ main(int argc, string argv[])
 			aflag++;
 			break;
 		case 'e':
-			if ((exportFile = fopen(optarg, "wb")) == NULL) {
-				warn_exit("can't open %s.", optarg);
-			}
+			exportPath = optarg;
 			break;
 		case 'g':
 			gflag++;
@@ -162,10 +164,6 @@ main(int argc, string argv[])
 
 	parse_packet();
 
-	if (exportFile) {
-		fclose(exportFile);
-		exportFile = NULL;
-	}
 	exit(EXIT_SUCCESS);
 }
 
@@ -180,13 +178,13 @@ skip(int len)
 public void
 dump(int len)
 {
-        if (gflag)
-                gdump(len);
-        else {
-                int i;
-                for (i = 0; i < len; i++)
-                        printf("%02x ", Getc());
-        }
+	if (gflag)
+		gdump(len);
+	else {
+		int i;
+		for (i = 0; i < len; i++)
+			printf("%02x ", Getc());
+	}
 }
 
 public void
@@ -213,14 +211,14 @@ kdump(int len)
 public void
 gdump(int len) /* mixed dump (like GnuPG) */
 {
-        int i;
-        for (i = 0; i < len; i++) {
-                int c = Getc();
+	int i;
+	for (i = 0; i < len; i++) {
+		int c = Getc();
 		if (isprint(c) == NO)
 			printf("\\x%02x", c);
 		else
 			printf("%c", c);
-        }
+	}
 }
 
 /*

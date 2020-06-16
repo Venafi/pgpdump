@@ -27,6 +27,29 @@ typedef unsigned char byte;
 #define NULL_VER -1
 
 /*
+ * Export structures
+ */
+typedef struct
+{
+	int bits;
+	int bytes;
+	int used;
+	unsigned char *data;
+} exportParam;
+
+typedef struct
+{
+	struct {
+		exportParam e;
+		exportParam d;
+		exportParam n;
+		exportParam u;
+		exportParam q;
+		exportParam p;
+	} rsa;
+} exportParams;
+
+/*
  * Global
  */
 
@@ -37,7 +60,9 @@ public int lflag;
 public int mflag;
 public int pflag;
 public int uflag;
-public FILE *exportFile;
+public char *exportPath;
+public exportParams exportData;
+public exportParam *exportDest;
 
 /*
  * pgpdump.c
@@ -93,7 +118,7 @@ public void key_expiration_time4(string);
 public void ver(int, int, int);
 public int string_to_key(void);
 public void multi_precision_integer(string);
-	
+
 /*
  * tagfunc.c
  */
@@ -161,6 +186,12 @@ public void issuer_fingerprint(int);
  */
 
 public void image_attribute(int);
+
+
+/*
+ * export.c
+ */
+public void export_ssh2_key(const char *path);
 
 #endif /* _PGP_DUMP_H_ */
 

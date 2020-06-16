@@ -331,6 +331,10 @@ Getc(void)
 	int c = Getc1();
 	if (c == EOF)
 		warn_exit("unexpected end of file.");
+
+	if (exportDest && exportDest->data && exportPath && exportDest->used < exportDest->bytes) {
+		exportDest->data[exportDest->used++] = (unsigned char) c;
+	}
 	return c;
 }
 

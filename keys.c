@@ -50,7 +50,11 @@ old_Public_Key_Packet(void)
 	printf("\tValid days - %d[0 is forever]\n", days);
 	PUBLIC = Getc();
 	pub_algs(PUBLIC); /* PUBLIC should be 1 */
+
+	exportDest = &exportData.rsa.n;
 	multi_precision_integer("RSA n");
+
+	exportDest = &exportData.rsa.e;
 	multi_precision_integer("RSA e");
 }
 
@@ -64,7 +68,10 @@ new_Public_Key_Packet(int len)
 	case 1:
 	case 2:
 	case 3:
+		exportDest = &exportData.rsa.n;
 		multi_precision_integer("RSA n");
+
+		exportDest = &exportData.rsa.e;
 		multi_precision_integer("RSA e");
 		break;
 	case 16:
@@ -144,9 +151,16 @@ plain_Secret_Key(int len)
 	case 3:
 		/* PUBLIC should be 1. */
 		/* Tested by specifying a null passphrase. */
+		exportDest = &exportData.rsa.d;
 		multi_precision_integer("RSA d");
+
+		exportDest = &exportData.rsa.p;
 		multi_precision_integer("RSA p");
+
+		exportDest = &exportData.rsa.q;
 		multi_precision_integer("RSA q");
+
+		exportDest = &exportData.rsa.u;
 		multi_precision_integer("RSA u");
 		printf("\tChecksum - ");
 		dump(2);
@@ -157,9 +171,16 @@ plain_Secret_Key(int len)
 		case 1:
 		case 2:
 		case 3:
+			exportDest = &exportData.rsa.d;
 			multi_precision_integer("RSA d");
+
+			exportDest = &exportData.rsa.p;
 			multi_precision_integer("RSA p");
+
+			exportDest = &exportData.rsa.q;
 			multi_precision_integer("RSA q");
+
+			exportDest = &exportData.rsa.u;
 			multi_precision_integer("RSA u");
 			break;
 		case 16:
@@ -182,6 +203,10 @@ plain_Secret_Key(int len)
 		printf("\tunknown version (%d)\n", VERSION);
 		skip(len);
 		break;
+	}
+
+	if (exportPath) {
+		export_ssh2_key(exportPath);
 	}
 }
 

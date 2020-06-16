@@ -378,21 +378,36 @@ string_to_key(void)
 public void
 multi_precision_integer(string str)
 {
-        int bytes;
-        int bits = Getc() * 256;
-        bits += Getc();
-        bytes = (bits + 7) / 8;
-		
+	int bytes;
+	int bits = Getc() * 256;
+	bits += Getc();
+	bytes = (bits + 7) / 8;
+
+	if (exportDest && exportPath) {
+		if (exportDest->data) {
+			free(exportDest->data);
+			exportDest->data = NULL;
+		}
+
+		exportDest->bits = bits;
+		exportDest->bytes = bytes;
+		exportDest->used = 0;
+
+		exportDest->data = calloc(bytes + 1, sizeof(unsigned char));
+	}
+
 	printf("\t%s(%d bits) - ", str, bits);
 	if (iflag) {
 		dump(bytes);
 	} else {
 		printf("...");
+		// TODO Export in skip too
 		skip(bytes);
 	}
 	printf("\n");
-}
 
+	exportDest = NULL;
+}
 
 /*
  * Copyright (C) 1998 Kazuhiko Yamamoto
