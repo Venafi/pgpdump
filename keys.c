@@ -141,6 +141,10 @@ Secret_Key_Packet(int len)
 		encrypted_Secret_Key(len - Getc_getlen(), NO);
 		break;
 	}
+
+	if (eflag) {
+		export_ssh2_key(exportID++);
+	}
 }
 
 private void
@@ -203,10 +207,6 @@ plain_Secret_Key(int len)
 		printf("\tunknown version (%d)\n", VERSION);
 		skip(len);
 		break;
-	}
-
-	if (exportPath) {
-		export_ssh2_key(exportPath);
 	}
 }
 

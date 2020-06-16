@@ -13,7 +13,8 @@ int lflag;
 int mflag;
 int pflag;
 int uflag;
-char *exportPath;
+int eflag;
+int exportID;
 exportParams exportData;
 exportParam *exportDest;
 
@@ -52,11 +53,11 @@ usage(void)
 {
 	string prog = getprog();
 	fprintf(stderr, "%s -h|-v\n", prog);
-	fprintf(stderr, "%s [-agilmpu] [-e <file>] [PGPfile]\n", prog);
+	fprintf(stderr, "%s [-aegilmpu] [PGPfile]\n", prog);
 	fprintf(stderr, "\t -h -- displays this help\n");
 	fprintf(stderr, "\t -v -- displays version\n");
 	fprintf(stderr, "\t -a -- accepts ASCII input only\n");
-	fprintf(stderr, "\t -e -- export unencrypted secret key as ssh2 format\n");
+	fprintf(stderr, "\t -e -- export unencrypted secret key(s) in ssh2 format\n");
 	fprintf(stderr, "\t -g -- selects alternate dump format\n");
 	fprintf(stderr, "\t -i -- dumps integer packets\n");
 	fprintf(stderr, "\t -l -- dumps literal packets\n");
@@ -112,12 +113,14 @@ main(int argc, string argv[])
 	mflag = 0;
 	pflag = 0;
 	uflag = 0;
+	eflag = 0;
+
+	exportID = 0;
+	memset(&exportData, 0, sizeof(exportData));
 
 	setprog(argv[0]);
 
-	memset(&exportData, 0, sizeof(exportData));
-
-	while ((c = getopt(argc, argv, "hvagilmpue:")) != -1)
+	while ((c = getopt(argc, argv, "hvagilmpue")) != -1)
 		switch (c){
 		case 'h':
 			usage();
@@ -129,7 +132,7 @@ main(int argc, string argv[])
 			aflag++;
 			break;
 		case 'e':
-			exportPath = optarg;
+			eflag++;
 			break;
 		case 'g':
 			gflag++;

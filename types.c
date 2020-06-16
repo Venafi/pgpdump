@@ -383,7 +383,7 @@ multi_precision_integer(string str)
 	bits += Getc();
 	bytes = (bits + 7) / 8;
 
-	if (exportDest && exportPath) {
+	if (exportDest && eflag) {
 		if (exportDest->data) {
 			free(exportDest->data);
 			exportDest->data = NULL;

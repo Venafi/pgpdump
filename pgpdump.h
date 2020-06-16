@@ -60,7 +60,8 @@ public int lflag;
 public int mflag;
 public int pflag;
 public int uflag;
-public char *exportPath;
+public int eflag;
+public int exportID;
 public exportParams exportData;
 public exportParam *exportDest;
 
@@ -191,7 +192,7 @@ public void image_attribute(int);
 /*
  * export.c
  */
-public void export_ssh2_key(const char *path);
+public void export_ssh2_key(int id);
 
 #endif /* _PGP_DUMP_H_ */
 

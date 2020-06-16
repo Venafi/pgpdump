@@ -77,14 +77,16 @@ free_export_params(void)
 	free_export_param(&exportData.rsa.p);
 }
 
+
 public void
-export_ssh2_key(const char *path)
+export_ssh2_key(int id)
 {
 	FILE		*f;
 	uint32_t	len					= 0;
 	uint32_t	SSHComMagicValue	= 0x3f6ff9eb;
 	char		*RsaKeyIdentifier	= "if-modn{sign{rsa-pkcs1-sha1},encrypt{rsa-pkcs1v2-oaep}}";
 	char		*NoCipher			= "none";
+	char		path[256];
 
 	if (validate_export_param(&exportData.rsa.e) ||
 		validate_export_param(&exportData.rsa.d) ||
@@ -98,11 +100,13 @@ export_ssh2_key(const char *path)
 		return;
 	}
 
+	sprintf(path, "secret-key.%d", id);
 	if (!(f = fopen(path, "wb"))) {
 		warning("can't open %s.", path);
 		free_export_params();
 		return;
 	}
+	exportID++;
 
 	do_write(&SSHComMagicValue, sizeof(SSHComMagicValue), f);
 
