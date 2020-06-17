@@ -7,6 +7,9 @@
 
 **pgpdump** is a PGP packet visualizer which displays the packet format of OpenPGP ([RFC 4880](http://tools.ietf.org/html/rfc4880)) and PGP version 2 ([RFC 1991](http://tools.ietf.org/html/rfc1991)).
 
+This fork of pgpdump has been extended to support exporting of unencrypted
+secret keys as SSH2 keys.
+
 Here is an example:
 
 	% pgpdump data/sig1
@@ -50,6 +53,17 @@ Binaries are available for Mac OS X via Homebrew:
 To know how to use pgpdump, type `pgpdump -h`.
 
 Some examples are stored in the `data` directory. Also, you can visualize your pubring and secring.
+
+## Secret Key Export
+
+This fork of pgpdump has been extended to support exporting of unencrypted
+secret keys as SSH2 keys.
+
+Exporting is done by running `pgpdump -e`:
+	% gpg --export-secret-key | pgpdump -e
+
+This will write any secret keys or subkeys to the current working directory with
+a name of `secret-key.x` where x is the key number.
 
 ## Home page
 
