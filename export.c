@@ -3,6 +3,7 @@
  */
 
 #include "pgpdump.h"
+#include <stdint.h>
 
 public int
 do_write(void *data, size_t len, FILE *f)
